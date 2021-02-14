@@ -19,3 +19,4 @@ covidtest <- select(covid2, Confirmed, Deaths, Recovered, Active)
 # NEED TO CONFIRM WHAT NEXT STEPS ARE HERE... 
 
 
+
