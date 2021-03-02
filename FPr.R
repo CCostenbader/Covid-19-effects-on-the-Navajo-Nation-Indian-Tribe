@@ -153,4 +153,3 @@ DeathsMeans <- covidtest4 %>% group_by(NavajoR) %>%
   summarize(Mean = mean(Deaths))
 ## On Average 3 more deaths in Non-Navajo Counties
 
-
