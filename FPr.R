@@ -7,6 +7,7 @@
 # FOR R TO WORK PROPERTLY. 
 
 # IMPORT LIBRARIES
+library("dplyr")
 library("rcompanion")
 library("car")
 library("fastR2")
@@ -15,8 +16,10 @@ library("IDPmisc")
 # IMPORT DATA SET 
 CovidDataSet <- read.csv("CovidDataSet.csv")
 
+# SORTING OUT AZ AND NM STATE FIPS CODES
 covid2 <- filter(CovidDataSet, FIPS %in% c(4001, 4003, 4005, 4007, 4009, 4011, 4012, 4013, 4015, 4017, 4019, 4021, 4023, 4025,4027,35001, 35003, 35005, 35006, 35007, 35009, 35011, 35013, 35015, 35017, 35019, 35021, 35023, 35025, 35027, 35028, 35029, 35031, 35033, 35035, 35037, 35039, 35041, 35045, 35047, 35043, 35049, 35051, 35053, 35055, 35057, 35059, 35061))
 
+# TIRMMING FIELDS FOR DATA SET
 covidtest2 <- select(covid2, FIPS, Lat, Long_, Confirmed, Deaths, Active)
 
 # Recode with Navajo binary
@@ -80,6 +83,7 @@ covidtest2$NavajoR[covidtest2$FIPS== 35005] <- 0 # Chaves, NM
 covidtest2$NavajoR[covidtest2$FIPS== 35023] <- 0 # Hidalgo, NM
 covidtest2$NavajoR[covidtest2$FIPS== 35041] <- 0 # Roosevelt, NM
 
+# TRIMMING OFF FIPS COLUMN
 covidtest3 <- select(covidtest2, Lat, Long_, Confirmed, 
                      Deaths, Active, NavajoR)
 
@@ -95,7 +99,12 @@ plotNormalHistogram(covidtest3$ConfirmedLOG)
 
 # Homogeneity of Variance
 bartlett.test(covidtest3$ConfirmedLOG ~ NavajoR, data= covidtest3)
-# Assumption not met
+# P-VALUE IS .0001848 < .05 AND IS NOT SIGNIFICANT
+# DOES NOT MEET ASSUMPTION FOR HOMOGENEITY OF VARIANCE
+ 
+# SAMPLE SIZE IS 20< AND MEETS ASSUMPTION 
+
+
 
 ## Welch's One-Way Test
 ANOVA <- lm(ConfirmedLOG ~ NavajoR, data=covidtest3)
@@ -107,7 +116,9 @@ Anova(ANOVA, Type="II", white.adjust=TRUE)
 ## Bonferroni Adj
 pairwise.t.test(covidtest3$ConfirmedLOG, covidtest3$NavajoR, 
                 p.adjust="bonferroni", pool.sd = FALSE)
-# Significant difference in Confirmed Cases between Navajo / Non-Navajo counties
+# Significant difference in Confirmed Cases between 
+# Navajo / Non-Navajo GROUPS
+
 
 # Means & conclusions
 ConfirmedMeans <- covidtest3 %>% group_by(NavajoR) %>% 
