@@ -14,16 +14,19 @@ library("fastR2")
 library("IDPmisc")
 
 # IMPORT DATA SET 
-CovidDataSet <- read.csv("CovidDataSet.csv")
+CovidDataSet <- read.csv("CovidDataSet2.csv")
 
 # SORTING OUT AZ AND NM STATE FIPS CODES
-covid2 <- filter(CovidDataSet, FIPS %in% c(4001, 4003, 4005, 4007, 4009, 4011, 4012, 4013, 4015, 4017, 4019, 4021, 4023, 4025,4027,35001, 35003, 35005, 35006, 35007, 35009, 35011, 35013, 35015, 35017, 35019, 35021, 35023, 35025, 35027, 35028, 35029, 35031, 35033, 35035, 35037, 35039, 35041, 35045, 35047, 35043, 35049, 35051, 35053, 35055, 35057, 35059, 35061))
+covid2 <- filter(CovidDataSet, 
+                 FIPS %in% c(4001, 4003, 4005, 4007, 4009, 4011, 4012, 4013, 4015, 4017, 4019, 4021, 4023, 4025,4027,
+                             35001, 35003, 35005, 35006, 35007, 35009, 35011, 35013, 35015, 35017, 35019, 35021, 35023, 35025, 35027, 35028, 35029, 35031, 35033, 35035, 35037, 35039, 35041, 35045, 35047, 35043, 35049, 35051, 35053, 35055, 35057, 35059, 35061))
 
-# TIRMMING FIELDS FOR DATA SET
-covidtest2 <- select(covid2, FIPS, Lat, Long_, Confirmed, Deaths, Active)
+# TRIMMING FIELDS FOR DATA SET
+covidtest2 <- select(covid2, FIPS, Province_State, Lat, Long_, 
+                     Confirmed, Deaths, Active, Incident_Rate, 
+                     Case_Fatality_Ratio)
 
 # Recode with Navajo binary
-
 covidtest2$NavajoR <- NA
 
 ## Navajo = 1
@@ -35,10 +38,9 @@ covidtest2$NavajoR[covidtest2$FIPS== 35045] <- 1
 
 ## Non-Navajo = 0
 covidtest2$NavajoR[covidtest2$FIPS== 4003] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 40012] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 4007] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35006] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35001] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 4009] <- 0 
+covidtest2$NavajoR[covidtest2$FIPS== 4011] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 4012] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 4013] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 4015] <- 0
@@ -47,45 +49,44 @@ covidtest2$NavajoR[covidtest2$FIPS== 4021] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 4023] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 4025] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 4027] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35029] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35001] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35003] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35028] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35033] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35035] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35013] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35011] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35009] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35039] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35005] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35006] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35007] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35028] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35017] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35027] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35025] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35009] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35011] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35013] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35015] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35017] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35019] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35021] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35023] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35025] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35027] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35028] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35029] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35033] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35035] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35037] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 35047] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35039] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35041] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35043] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 35047] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35049] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35051] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35053] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35055] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35057] <- 0
-covidtest2$NavajoR[covidtest2$FIPS== 90035] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35059] <- 0
 covidtest2$NavajoR[covidtest2$FIPS== 35061] <- 0
+covidtest2$NavajoR[covidtest2$FIPS== 90049] <- 0
 
-## NAs left off question if NN
-covidtest2$NavajoR[covidtest2$FIPS== 4009] <- 0 # Graham, AZ
-covidtest2$NavajoR[covidtest2$FIPS== 4011] <- 0 # Greenlee, AZ
-covidtest2$NavajoR[covidtest2$FIPS== 35005] <- 0 # Chaves, NM
-covidtest2$NavajoR[covidtest2$FIPS== 35023] <- 0 # Hidalgo, NM
-covidtest2$NavajoR[covidtest2$FIPS== 35041] <- 0 # Roosevelt, NM
 
-# TRIMMING OFF FIPS COLUMN
-covidtest3 <- select(covidtest2, Lat, Long_, Confirmed, 
-                     Deaths, Active, NavajoR)
+
+covidtest3 <- select(covidtest2, FIPS, Province_State, Lat, Long_, 
+                     Confirmed, Deaths, Active, Incident_Rate, 
+                     Case_Fatality_Ratio, NavajoR)
 
 ### ANOVA for Confirmed Cases
 
@@ -99,12 +100,10 @@ plotNormalHistogram(covidtest3$ConfirmedLOG)
 
 # Homogeneity of Variance
 bartlett.test(covidtest3$ConfirmedLOG ~ NavajoR, data= covidtest3)
-# P-VALUE IS .0001848 < .05 AND IS NOT SIGNIFICANT
+# P-VALUE IS .0001855 < .05 AND IS NOT SIGNIFICANT
 # DOES NOT MEET ASSUMPTION FOR HOMOGENEITY OF VARIANCE
- 
-# SAMPLE SIZE IS 20< AND MEETS ASSUMPTION 
 
-
+# SAMPLE SIZE IS >20 AND MEETS ASSUMPTION 
 
 ## Welch's One-Way Test
 ANOVA <- lm(ConfirmedLOG ~ NavajoR, data=covidtest3)
@@ -123,9 +122,10 @@ pairwise.t.test(covidtest3$ConfirmedLOG, covidtest3$NavajoR,
 # Means & conclusions
 ConfirmedMeans <- covidtest3 %>% group_by(NavajoR) %>% 
   summarize(Mean = mean(Confirmed))
+View(ConfirmedMeans)
 ## There is a Significant difference between Navajo & Non-Navajo 
 ## Counties, on average confirmed cases in the Non-Navajo counties 
-## is 7608 more than that of the Navajo Nation counties
+## is 7974 more than that of the Navajo Nation counties
 
 
 ### ANOVA for Deaths
@@ -139,11 +139,10 @@ covidtest3$DeathsLOG <- log(covidtest3$Deaths)
 # Drop NAs
 covidtest4 <-NaRV.omit(covidtest3)
 
-plotNormalHistogram(covidtest4$DeathsLOG)
-# Log is good
 
 # Homogeneity of Variance
 bartlett.test(covidtest4$DeathsLOG ~ NavajoR, data= covidtest4)
+# P-VALUE IS 0.002804 < .05 AND 
 # Assumptions Not Met
 
 
@@ -162,5 +161,50 @@ pairwise.t.test(covidtest4$DeathsLOG, covidtest4$NavajoR, p.adjust="bonferroni",
 # Means & Conclusions
 DeathsMeans <- covidtest4 %>% group_by(NavajoR) %>% 
   summarize(Mean = mean(Deaths))
-## On Average 3 more deaths in Non-Navajo Counties
+## On Average 18 more deaths in Non-Navajo Counties
 
+
+### ANOVA for Incident Rate
+
+# Normality
+plotNormalHistogram(covidtest3$Incident_Rate)
+# Normal dist.
+
+# Homogeneity of Variance
+bartlett.test(Incident_Rate ~ NavajoR, data= covidtest3)
+# p value > .05, homogeneity met
+
+# ANOVA
+IncidentANOVA <- aov(covidtest3$Incident_Rate ~ covidtest3$NavajoR)
+
+summary(IncidentANOVA)
+## Test is significant
+
+## Post-Hoc
+pairwise.t.test(covidtest3$Incident_Rate, covidtest3$NavajoR, p.adjust="bonferroni")
+# Significant difference between rates in and out of Navajo Nation counties
+
+## Means & Conclusions
+IncidentMeans <- covidtest3 %>% group_by(NavajoR) %>% summarize(Mean = mean(Incident_Rate))
+## Significantly higher incident rates within Navajo Nation counties with Navajo Nation counties having an average of 6,956 higher incident rates than counties without Navajo Nation
+
+### ANOVAs for Death/Fality Ratio
+
+# Normality
+plotNormalHistogram(covidtest3$Case_Fatality_Ratio)
+covidtest4$RatioLOG <- log(covidtest4$Case_Fatality_Ratio)
+plotNormalHistogram(covidtest4$RatioLOG)
+# Log iis Good
+
+# Homogeneity of Variance
+bartlett.test(RatioLOG ~ NavajoR, data= covidtest4)
+# Assumptions Met
+
+# ANOVA
+RatioANOVA <- aov(covidtest4$RatioLOG ~ covidtest4$NavajoR)
+summary(RatioANOVA)
+# Insignificant difference between Navajo and Non-Navajo County Ratios
+
+# Post-Hoc
+pairwise.t.test(covidtest4$RatioLOG, covidtest4$NavajoR, p.adjust="bonferroni")
+## Insignificant difference between Navajor and Non-Navajo county ratios
