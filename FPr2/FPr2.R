@@ -94,29 +94,41 @@ covidtest3 <- select(covidtest2, FIPS, Province_State, Lat, Long_,
 
 #Normality
 plotNormalHistogram(covidtest3$Confirmed)
+
+covidtest3$ConfirmedSQRT <- sqrt(covidtest3$Confirmed)
+plotNormalHistogram((covidtest3$ConfirmedSQRT))
+# STILL POSITIVELY SKEWED USING SQRT
+
+# TESTING FOR NORMALITY WITH LOG
+plotNormalHistogram(covidtest3$Confirmed)
 covidtest3$ConfirmedLOG <- log(covidtest3$Confirmed)
 plotNormalHistogram(covidtest3$ConfirmedLOG)
-#Log is Good
+# LOG IS GOOD, MEETS ASSUMPTION FOR NORMALITY
 
 # Homogeneity of Variance
 bartlett.test(covidtest3$ConfirmedLOG ~ NavajoR, data= covidtest3)
-# P-VALUE IS .0001855 < .05 AND IS NOT SIGNIFICANT
+# P-VALUE IS .0001855 < .05 AND IS SIGNIFICANT
 # DOES NOT MEET ASSUMPTION FOR HOMOGENEITY OF VARIANCE
 
 # SAMPLE SIZE IS >20 AND MEETS ASSUMPTION 
 
+## RUNNING WELCH'S ONE WAY BECAUSE DOES NOT MEET ASSUMPTION 
+## FOR HOMOGENEITY OF VARIANCE. 
 ## Welch's One-Way Test
 ANOVA <- lm(ConfirmedLOG ~ NavajoR, data=covidtest3)
 Anova(ANOVA, Type="II", white.adjust=TRUE)
-# Significant difference between two IVs
+## AFTER RUNNING WELCH'S ONE-WAY TEST
+## P-VALUE = .001 < .05 AND IS SIGNIFICANT
+## THERE IS A SIGNFICANT DIFFERENCE BETWEEN THE TWO IVs
 
 ## Post-Hoc
 
 ## Bonferroni Adj
 pairwise.t.test(covidtest3$ConfirmedLOG, covidtest3$NavajoR, 
                 p.adjust="bonferroni", pool.sd = FALSE)
-# Significant difference in Confirmed Cases between 
-# Navajo / Non-Navajo GROUPS
+# P-VALUE = 0.000015 < .05 AND IS SIGNIFICANT
+# THEREFORE THERE IS A Significant difference 
+# BETWEEN CONFIRMED CASES Navajo / Non-Navajo GROUPS
 
 
 # Means & conclusions
@@ -142,13 +154,17 @@ covidtest4 <-NaRV.omit(covidtest3)
 
 # Homogeneity of Variance
 bartlett.test(covidtest4$DeathsLOG ~ NavajoR, data= covidtest4)
-# P-VALUE IS 0.002804 < .05 AND 
-# Assumptions Not Met
+# P-VALUE IS 0.002804 < .05 AND IS SIGNIFICANT
+# DOES NOT MEET ASSUMPTION
 
 
 ## Welch's One-Way Test
 ANOVA2 <- lm(DeathsLOG ~ NavajoR, data=covidtest4)
 Anova(ANOVA2, Type="II", white.adjust=TRUE)
+# P-VALUE = .001 < .05 AND IS SIGNIFICANT
+# THERE IS A SIGNIFICANT DIFFERENCE BETWEEN 
+# NAVAJO AND NON-NAVAJO DEATHS
+# 
 # Significant Difference Between 2 IVs
 
 
@@ -164,20 +180,22 @@ DeathsMeans <- covidtest4 %>% group_by(NavajoR) %>%
 ## On Average 18 more deaths in Non-Navajo Counties
 
 
-### ANOVA for Incident Rate
+### ANOVA for INCIDENT_RATE = CASES PER 100,000 PEOPLE
 
 # Normality
 plotNormalHistogram(covidtest3$Incident_Rate)
-# Normal dist.
+# Normal distribution and meets assumption
 
 # Homogeneity of Variance
 bartlett.test(Incident_Rate ~ NavajoR, data= covidtest3)
-# p value > .05, homogeneity met
+# P-Value = .05 < .362 and iS not significant
+# THIS MEETS ASSUMPTION FOR HOMOGENIETY OF VARIANCE
 
 # ANOVA
 IncidentANOVA <- aov(covidtest3$Incident_Rate ~ covidtest3$NavajoR)
 
 summary(IncidentANOVA)
+## P-VALUE =  .01 < .05 AND IS SIGNFICANT 
 ## Test is significant
 
 ## Post-Hoc
@@ -188,23 +206,41 @@ pairwise.t.test(covidtest3$Incident_Rate, covidtest3$NavajoR, p.adjust="bonferro
 IncidentMeans <- covidtest3 %>% group_by(NavajoR) %>% summarize(Mean = mean(Incident_Rate))
 ## Significantly higher incident rates within Navajo Nation counties with Navajo Nation counties having an average of 6,956 higher incident rates than counties without Navajo Nation
 
-### ANOVAs for Death/Fality Ratio
+### ANOVAs for CASE_FATALITY_RATIO 
 
 # Normality
 plotNormalHistogram(covidtest3$Case_Fatality_Ratio)
 covidtest4$RatioLOG <- log(covidtest4$Case_Fatality_Ratio)
 plotNormalHistogram(covidtest4$RatioLOG)
-# Log iis Good
+# LOG MEETS ASSUMPION FOR NORMALITY
 
 # Homogeneity of Variance
 bartlett.test(RatioLOG ~ NavajoR, data= covidtest4)
-# Assumptions Met
+# P-VALUE = .05 < .225 AND IS NOT SIGNIFICANT
+# WHICH MEETS ASSUMPTION 
 
 # ANOVA
 RatioANOVA <- aov(covidtest4$RatioLOG ~ covidtest4$NavajoR)
 summary(RatioANOVA)
+# P-VALUE IS 
 # Insignificant difference between Navajo and Non-Navajo County Ratios
 
 # Post-Hoc
 pairwise.t.test(covidtest4$RatioLOG, covidtest4$NavajoR, p.adjust="bonferroni")
-## Insignificant difference between Navajor and Non-Navajo county ratios
+## P-VALUE IS .05 < .17 AND IS NOT SIGNIFICANT
+
+## CONCLUSION:  IF THERE IS AN INSIGNIFICANT DIFFERENCE IN THE 
+## CASE_FATALITY_RATIO AS A PERCENTAGE, 
+## WHICH = NUMBER OF DEATHS / NUMBER OF CASES BETWEEN 
+## NON-NAVAJO VS NAVAJO NATION.  
+
+## LOOKING AT AN INCIDENT_RATE SHOWING 63.24% MORE CASES PER 
+## 100,000 MORE CASES PER 100K PEOPLE, 
+## THEN WE CAN ONLY CONCLUDE 
+## THAT THE NAVAJO NATION HAS HAD MORE THAN A GREATER NUMBER 
+## DEATHS PER 100,000 PEOPLE AS WELL.  
+
+### THE PEOPLE ARE GETTING CRUSHED BY COVID-19 COMPARED TO 
+### SURROUNDING POPULATIONS JUST IN AZ AND NM ALONE!  
+## OF NAVAJO VS NON-NAVAJO AS A PERCENTAGE 
+Insignificant difference between Navajo and Non-Navajo county ratios
